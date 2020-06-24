@@ -1,0 +1,142 @@
+{
+	"info": {
+		"_postman_id": "4c3651fd-61de-44ac-ba80-1dbddd4062a7",
+		"name": "API Test Automation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Employee ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bdc7d9af-dc50-4282-a7ab-1b91cfdcd76d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Employee creation is correct\", function () {",
+							"    var employee = pm.response.json();",
+							"    console.info(employee)",
+							"    pm.expect(employee.employee_name, \"Not expected name\").to.eql(pm.variables.get(\"employee_name\"));",
+							"    pm.expect(employee.employee_salary, \"Not expected salary\").to.eql(pm.variables.get(\"employee_salary\"));",
+							"    pm.expect(employee.employee_age, \"Not expected age\").to.eql(pm.variables.get(\"employee_age\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"{{name}}\",\n    \"salary\":\"{{salary}}\",\n    \"age\":\"{{age}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://dummy.restapiexample.com/api/v1/create",
+					"protocol": "http",
+					"host": [
+						"dummy",
+						"restapiexample",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Employees List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2d219f4a-104c-4d99-b33d-508cc67a813b",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Response is not empty\", function () {",
+							"    pm.expect(jsonData.data).to.not.have.lengthOf(0);",
+							"});",
+							"",
+							"var employeeName = _.map(jsonData.data, \"employee_name\");",
+							"",
+							"pm.test(\"Created employee exists in the employee list\", function () {",
+							"    pm.expect(employeeName).to.include(\"Arun Louis\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://dummy.restapiexample.com/api/v1/employees",
+					"protocol": "http",
+					"host": [
+						"dummy",
+						"restapiexample",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"employees"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "5acd062a-2b96-40c1-b577-41fa64ffba0b",
+				"type": "text/javascript",
+				"exec": [
+					"pm.variables.set(\"name\", \"Arun Louis\")",
+					"pm.variables.set(\"salary\", _.random(1000, 2000))",
+					"pm.variables.set(\"age\", \"32\")",
+					"",
+					"var employee = {",
+					"    \"name\" : pm.variables.get(\"name\"),",
+					"    \"salary\" : pm.variables.get(\"salary\"),",
+					"    \"age\" : pm.variables.get(\"age\"),",
+					"}",
+					"pm.variables.set(\"new_employee\", employee)"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "004ba7bf-73da-4a33-942d-cffb2efdab40",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
